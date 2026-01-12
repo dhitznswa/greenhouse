@@ -1,0 +1,6 @@
+{
+    "watch": ["src"],
+    "ignore": ["src/**/*.spec.ts", "prisma/migrations/*", "src/generated/prisma"],
+    "ext": "ts, js",
+    "exec": "ts-node ./src/server.ts"
+}

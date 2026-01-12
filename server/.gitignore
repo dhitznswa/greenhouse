@@ -1,0 +1,13 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+# Ignore generated Prisma client
+/src/generated/prisma
+
+# Ignore build output
+/build
+/dist
+
+# Ignore logs
+/logs
