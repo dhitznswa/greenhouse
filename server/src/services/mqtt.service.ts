@@ -3,18 +3,16 @@ import { io } from "./socket.service";
 import { logger } from "../utils/logger";
 import { RequestSensorData, SensorData } from "../types";
 import { prisma } from "../utils/prisma";
+import { config } from "../config/app";
 
 let sensorBuffer: SensorData[] = [];
 const BATCH_SIZE = 5;
 
-const mqttClient = mqtt.connect(
-  process.env.MQTT_BROKER || "mqtt://127.0.0.1:1883",
-  {
-    username: process.env.MQTT_USERNAME,
-    password: process.env.MQTT_PASSWORD,
-    reconnectPeriod: 5000,
-  }
-);
+const mqttClient = mqtt.connect(config.mqtt.broker, {
+  username: config.mqtt.username,
+  password: config.mqtt.password,
+  reconnectPeriod: 5000,
+});
 
 mqttClient.on("connect", () => {
   logger.info("Connected to MQTT broker");

@@ -7,6 +7,18 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  name     String
+  password String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
 model SensorReading {
   id        String   @id @default(cuid())
   timestamp DateTime @default(now()) @db.Timestamptz(6)
