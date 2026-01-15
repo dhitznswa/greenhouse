@@ -31,6 +31,17 @@ mqttClient.on("message", async (topic, message) => {
         `Received sensor data from device with ID : ${data.deviceCode}`
       );
 
+      const existingDevice = await prisma.device.findUnique({
+        where: { code: data.deviceCode },
+      });
+
+      if (!existingDevice) {
+        logger.warn(
+          `Device with code ${data.deviceCode} not found in database.`
+        );
+        return;
+      }
+
       const alerts = thresholdAlert({
         deviceCode: data.deviceCode,
         temperature: data.temp ?? null,
@@ -42,11 +53,11 @@ mqttClient.on("message", async (topic, message) => {
       if (alerts.length > 0) {
         alerts.forEach(async (alert) => {
           logger.warn(`Alert triggered: ${alert.type} - ${alert.message}`);
-          io.emit("sensor:alert", alert);
+          io.to(`user_${existingDevice.userId}`).emit("sensor:alert", alert);
         });
       }
 
-      io.emit("sensor:update", data);
+      io.to(`user_${existingDevice.userId}`).emit("sensor:update", data);
 
       sensorBuffer.push({
         deviceCode: data.deviceCode,

@@ -5,11 +5,12 @@ import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import { initializeSocketService } from "./services/socket.service";
 import { logger } from "./utils/logger";
+import { config } from "./config/app";
+import authRouter from "./api/auth/auth.route";
+import sensorRouter from "./api/sensor/sensor.route";
 
 import "./services/mqtt.service";
 import "./jobs/cleanup-job";
-import authRouter from "./api/auth/auth.route";
-import { config } from "./config/app";
 
 const app = express();
 const server = http.createServer(app);
@@ -32,7 +33,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/auth", authRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/sensor", sensorRouter);
 
 server.listen(config.port, () => {
   logger.info(`Server is running on port ${config.port}`);
